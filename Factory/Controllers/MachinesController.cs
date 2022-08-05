@@ -46,14 +46,32 @@ namespace Factory.Controllers
       return RedirectToAction("Index");
     }
 
-    public ActionResult Details()
+    public ActionResult Details(int id)
     {
-      return View();
+      var machine = _db.Machines.FirstOrDefault(m => m.MachineId == id);
+      ViewBag.PageTitle = $"{machine.Name}:{machine.ModelNumber} Details";
+      ViewBag.Edited = false;
+      if (TempData["edited"] != null)
+      {
+        ViewBag.Edited = true;
+      }
+      return View(machine);
     }
 
-    public ActionResult Edit()
+    public ActionResult Edit(int id)
     {
-      return View();
+      var machine = _db.Machines.FirstOrDefault(m => m.MachineId == id);
+      ViewBag.PageTitle = $"Edit {machine.Name}:{machine.ModelNumber}";
+      return View(machine);
+    }
+
+    [HttpPost]
+    public ActionResult Edit(Machine machine)
+    {
+      _db.Entry(machine).State = EntityState.Modified;
+      _db.SaveChanges();
+      TempData["edited"] = "success";
+      return RedirectToAction("Details", new { id = machine.MachineId });
     }
 
     public ActionResult Delete()

@@ -11,3 +11,7 @@ div#footer {
 .warning {
   color: red;
 }
+
+.success {
+  color: green;
+}
