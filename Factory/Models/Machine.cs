@@ -4,5 +4,6 @@ namespace Factory.Models
   {
     public int MachineId { get; set; }
     public string Name { get; set; }
+    public string ModelNumber { get; set; }
   }
 }
