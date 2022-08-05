@@ -25,22 +25,69 @@ namespace Factory.Controllers
 
     public ActionResult Create()
     {
+      ViewBag.PageTitle = "Add New Engineer";
+      ViewBag.Duplicate = false;
       return View();
     }
 
-    public ActionResult Details()
+    [HttpPost]
+    public ActionResult Create(Engineer engineer)
     {
-      return View();
+      if (_db.Engineers.FirstOrDefault(e => e.Name == engineer.Name) == null)
+      {
+        _db.Engineers.Add(engineer);
+        _db.SaveChanges();
+        return RedirectToAction("Index");
+      }
+      else
+      {
+        ViewBag.Duplicate = true;
+        return View();
+      }
     }
 
-    public ActionResult Edit()
+    public ActionResult Details(int id)
     {
-      return View();
+      Engineer engineer = _db.Engineers.FirstOrDefault(e => e.EngineerId == id);
+      ViewBag.PageTitle = $"{engineer.Name} Details";
+      ViewBag.Edited = false;
+      if (TempData["edited"] != null)
+      {
+        ViewBag.Edited = true;
+      }
+      return View(engineer);
     }
 
-    public ActionResult Delete()
+    public ActionResult Edit(int id)
     {
-      return View();
+      Engineer engineer = _db.Engineers.FirstOrDefault(e => e.EngineerId == id);
+      ViewBag.PageTitle = $"Edit {engineer.Name}";
+      return View(engineer);
+    }
+
+    [HttpPost]
+    public ActionResult Edit(Engineer engineer)
+    {
+      _db.Entry(engineer).State = EntityState.Modified;
+      _db.SaveChanges();
+      TempData["edited"] = "success";
+      return RedirectToAction("Details", new { id = engineer.EngineerId });
+    }
+
+    public ActionResult Delete(int id)
+    {
+      Engineer engineer = _db.Engineers.FirstOrDefault(e => e.EngineerId == id);
+      ViewBag.PageTitle = $"Delete {engineer.Name}";
+      return View(engineer);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    public ActionResult Deleted(int id)
+    {
+      Engineer engineer = _db.Engineers.FirstOrDefault(e => e.EngineerId == id);
+      _db.Engineers.Remove(engineer);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
     }
   }
 }

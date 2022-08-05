@@ -1,0 +1,19 @@
+@{
+  Layout = "_Layout";
+}
+
+@model Factory.Models.Engineer
+
+<h2>@Model.Name Details</h2>
+
+@if (ViewBag.Edited)
+{
+  <hr />
+  <h4 class="success">Successfully Edited</h4>
+}
+
+<hr />
+<p>@Html.ActionLink($"Edit {Model.Name}", "Edit", new { id = Model.EngineerId })</p>
+<p>@Html.ActionLink($"Delete {Model.Name}", "Delete", new { id = Model.EngineerId })</p>
+<p>@Html.ActionLink("Back to Engineer List", "Index")</p>
+<p>@Html.ActionLink("Back to Home", "Index", "Home")</p>

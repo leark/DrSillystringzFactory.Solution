@@ -37,13 +37,13 @@ namespace Factory.Controllers
       {
         _db.Machines.Add(machine);
         _db.SaveChanges();
+        return RedirectToAction("Index");
       }
       else
       {
         ViewBag.Duplicate = true;
         return View();
       }
-      return RedirectToAction("Index");
     }
 
     public ActionResult Details(int id)
