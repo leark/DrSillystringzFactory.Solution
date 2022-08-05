@@ -1,7 +1,7 @@
 @{
   Layout = "_Layout";
 }
-
+@using Factory.Models
 @model Factory.Models.Engineer
 
 <h2>@Model.Name Details</h2>
@@ -10,6 +10,37 @@
 {
   <hr />
   <h4 class="success">Successfully Edited</h4>
+}
+@if (ViewBag.MachineAdded != null)
+{
+  <hr />
+  <h4 class="success">License to repair @ViewBag.MachineAdded.Name added.</h4>
+}
+
+<hr />
+@if (Model.JoinEntities.Count == 0)
+{
+  <h4>@Model.Name currently has no repair licenses.</h4>
+}
+else
+{
+  <h4>@Model.Name has the license to repair...</h4>
+  foreach (RepairLicense rL in Model.JoinEntities)
+  {
+    <li>@rL.Machine.Name</li>
+  }
+}
+
+<hr />
+<h4>Add Repair License</h4>
+@using (Html.BeginForm())
+{
+  @Html.Hidden("EngineerId", Model.EngineerId)
+  <div class="mb-3">
+    @Html.Label("Machine")
+    @Html.DropDownList("MachineId", ViewBag.MachineId, null, new { required = "required" })
+  </div>
+  <input type="submit" value="Add Machine">
 }
 
 <hr />

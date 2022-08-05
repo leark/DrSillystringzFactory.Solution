@@ -49,6 +49,8 @@ namespace Factory.Controllers
     public ActionResult Details(int id)
     {
       Engineer engineer = _db.Engineers.FirstOrDefault(e => e.EngineerId == id);
+      ViewBag.MachineId = new SelectList(_db.Machines, "MachineId", "Name");
+
       ViewBag.PageTitle = $"{engineer.Name} Details";
       ViewBag.Edited = false;
       if (TempData["edited"] != null)
@@ -56,6 +58,19 @@ namespace Factory.Controllers
         ViewBag.Edited = true;
       }
       return View(engineer);
+    }
+
+    [HttpPost]
+    public ActionResult Details(RepairLicense rL)
+    {
+      if (_db.RepairLicenses.FirstOrDefault(r => r.EngineerId == rL.EngineerId && r.MachineId == rL.MachineId) == null)
+      {
+        _db.RepairLicenses.Add(rL);
+        _db.SaveChanges();
+        Machine machine = _db.Machines.FirstOrDefault(m => m.MachineId == rL.MachineId);
+        ViewBag.MachineAdded = machine;
+      }
+      return RedirectToAction("Details", new { id = rL.EngineerId });
     }
 
     public ActionResult Edit(int id)
