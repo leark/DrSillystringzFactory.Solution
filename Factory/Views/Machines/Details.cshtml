@@ -1,7 +1,7 @@
 @{
   Layout = "_Layout";
 }
-
+@using Factory.Models
 @model Factory.Models.Machine
 
 <h2>@Model.Name Details</h2>
@@ -11,6 +11,52 @@
 {
   <hr />
   <h4 class="success">Successfully Edited</h4>
+}
+@if (ViewBag.AddedEngineer != null)
+{
+  <hr />
+  <h4 class="success">@ViewBag.AddedEngineer can now repair @Model.Name.</h4>
+}
+
+<hr />
+@if (Model.JoinEntities.Count == 0)
+{
+  <h4>@Model.Name currently has no engineers that can repair it.</h4>
+}
+else
+{
+  <h4>Engineers that can repair @Model.Name</h4>
+  <ul>
+    @foreach (RepairLicense rL in Model.JoinEntities)
+    {
+      <div>
+        <li>
+          @Html.ActionLink(
+      $"{rL.Engineer.Name}",
+      "Details", "Engineers",
+      new { id = rL.EngineerId })
+        </li>
+        @using (Html.BeginForm("DeleteRepairLicense", "Engineers", FormMethod.Post, new { @class = "delete-form" }))
+        {
+          @Html.Hidden("RepairLicenseId", rL.RepairLicenseId)
+          @Html.Hidden("FromEngineers", false)
+          <input class="delete-btn" type="submit" value="Remove Repair License" />
+        }
+      </div>
+    }
+  </ul>
+}
+
+<hr />
+<h4>Add Repair License</h4>
+@using (Html.BeginForm())
+{
+  @Html.Hidden("MachineId", Model.MachineId)
+  <div class="mb-3">
+    @Html.Label("Engineer")
+    @Html.DropDownList("EngineerId", ViewBag.EngineerId, null, new { required = "required" })
+  </div>
+  <input type="submit" value="Add Engineer">
 }
 
 <hr />

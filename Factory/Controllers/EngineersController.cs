@@ -20,6 +20,10 @@ namespace Factory.Controllers
     {
       List<Engineer> model = _db.Engineers.ToList();
       ViewBag.PageTitle = "View All Engineers";
+      if (TempData["deleted"] != null)
+      {
+        ViewBag.Deleted = TempData["deleted"];
+      }
       return View(model);
     }
 
@@ -57,6 +61,10 @@ namespace Factory.Controllers
       {
         ViewBag.Edited = true;
       }
+      if (TempData["addedMachine"] != null)
+      {
+        ViewBag.AddedMachine = TempData["addedMachine"];
+      }
       return View(engineer);
     }
 
@@ -65,10 +73,10 @@ namespace Factory.Controllers
     {
       if (_db.RepairLicenses.FirstOrDefault(r => r.EngineerId == rL.EngineerId && r.MachineId == rL.MachineId) == null)
       {
+        Machine machine = _db.Machines.FirstOrDefault(m => m.MachineId == rL.MachineId);
+        TempData["addedMachine"] = machine.Name + ":" + machine.ModelNumber;
         _db.RepairLicenses.Add(rL);
         _db.SaveChanges();
-        Machine machine = _db.Machines.FirstOrDefault(m => m.MachineId == rL.MachineId);
-        ViewBag.MachineAdded = machine;
       }
       return RedirectToAction("Details", new { id = rL.EngineerId });
     }
@@ -102,7 +110,24 @@ namespace Factory.Controllers
       Engineer engineer = _db.Engineers.FirstOrDefault(e => e.EngineerId == id);
       _db.Engineers.Remove(engineer);
       _db.SaveChanges();
+      TempData["deleted"] = engineer.Name;
       return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public ActionResult DeleteRepairLicense(int repairLicenseId, bool fromEngineers)
+    {
+      var repairLicense = _db.RepairLicenses.FirstOrDefault(rL => rL.RepairLicenseId == repairLicenseId);
+      _db.RepairLicenses.Remove(repairLicense);
+      _db.SaveChanges();
+      if (fromEngineers)
+      {
+        return RedirectToAction("Details", new { id = repairLicense.EngineerId });
+      }
+      else
+      {
+        return RedirectToAction("Details", "Machines", new { id = repairLicense.MachineId });
+      }
     }
   }
 }

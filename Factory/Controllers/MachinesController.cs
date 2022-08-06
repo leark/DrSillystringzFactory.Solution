@@ -49,13 +49,32 @@ namespace Factory.Controllers
     public ActionResult Details(int id)
     {
       var machine = _db.Machines.FirstOrDefault(m => m.MachineId == id);
+      ViewBag.EngineerId = new SelectList(_db.Engineers, "EngineerId", "Name");
+
       ViewBag.PageTitle = $"{machine.Name}:{machine.ModelNumber} Details";
       ViewBag.Edited = false;
       if (TempData["edited"] != null)
       {
         ViewBag.Edited = true;
       }
+      if (TempData["addedEngineer"] != null)
+      {
+        ViewBag.AddedEngineer = TempData["addedEngineer"];
+      }
       return View(machine);
+    }
+
+    [HttpPost]
+    public ActionResult Details(RepairLicense rL)
+    {
+      if (_db.RepairLicenses.FirstOrDefault(r => r.EngineerId == rL.EngineerId && r.MachineId == rL.MachineId) == null)
+      {
+        Engineer engineer = _db.Engineers.FirstOrDefault(m => m.EngineerId == rL.EngineerId);
+        TempData["addedEngineer"] = engineer.Name;
+        _db.RepairLicenses.Add(rL);
+        _db.SaveChanges();
+      }
+      return RedirectToAction("Details", new { id = rL.MachineId });
     }
 
     public ActionResult Edit(int id)

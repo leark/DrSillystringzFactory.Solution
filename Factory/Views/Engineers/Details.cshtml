@@ -4,17 +4,17 @@
 @using Factory.Models
 @model Factory.Models.Engineer
 
-<h2>@Model.Name Details</h2>
+<h2>Engineer <strong>@Model.Name</strong></h2>
 
 @if (ViewBag.Edited)
 {
   <hr />
   <h4 class="success">Successfully Edited</h4>
 }
-@if (ViewBag.MachineAdded != null)
+@if (ViewBag.AddedMachine != null)
 {
   <hr />
-  <h4 class="success">License to repair @ViewBag.MachineAdded.Name added.</h4>
+  <h4 class="success">License to repair @ViewBag.AddedMachine added.</h4>
 }
 
 <hr />
@@ -25,10 +25,25 @@
 else
 {
   <h4>@Model.Name has the license to repair...</h4>
-  foreach (RepairLicense rL in Model.JoinEntities)
-  {
-    <li>@rL.Machine.Name</li>
-  }
+  <ul>
+    @foreach (RepairLicense rL in Model.JoinEntities)
+    {
+      <div>
+        <li>
+          @Html.ActionLink(
+      $"{rL.Machine.Name} : {rL.Machine.ModelNumber}",
+      "Details", "Machines",
+      new { id = rL.MachineId })
+        </li>
+        @using (Html.BeginForm("DeleteRepairLicense", "Engineers", FormMethod.Post, new { @class = "delete-form" }))
+        {
+          @Html.Hidden("RepairLicenseId", rL.RepairLicenseId)
+          @Html.Hidden("FromEngineers", true)
+          <input class="delete-btn" type="submit" value="Remove Repair License" />
+        }
+      </div>
+    }
+  </ul>
 }
 
 <hr />

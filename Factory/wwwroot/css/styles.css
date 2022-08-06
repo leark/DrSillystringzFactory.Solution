@@ -15,3 +15,17 @@ div#footer {
 .success {
   color: green;
 }
+
+.delete-form {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+ul {
+  display: flexbox;
+}
+
+li {
+  display: inline-block;
+  margin-bottom: 5px;
+}
