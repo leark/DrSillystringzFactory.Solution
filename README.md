@@ -2,7 +2,7 @@
 
 #### By _Seung Lee_
 
-#### _A simple website that lets ._
+#### _A simple website that lets a user to add engineeres that can repair added machines._
 
 ## Technologies Used
 
@@ -16,7 +16,7 @@
 
 ## Description
 
-A simple website where a user can .
+A simple website where a user can manage a factory with machines and engineers. Machines that are added can have engineers with repair license. User can view all engineers or machines and go to detail page to see which engineer can repair which machine. User can also add such relationship in the details page of each. Engineers and machines can be edited and deleted also.
 
 ## Setup/Installation Requirements
 _Requires console application such as Git Bash, Terminal, or PowerShell_
@@ -64,6 +64,11 @@ _Requires console application such as Git Bash, Terminal, or PowerShell_
 ```
 
 7. Replace [YOUR-PASSWORD-HERE] with your MySQL password.
+
+8. Run the command
+
+    ```dotnet ef database update```
+
 
 <strong>To Run</strong>
 
